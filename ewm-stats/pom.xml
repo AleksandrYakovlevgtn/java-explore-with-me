@@ -11,13 +11,13 @@
     </parent>
 
     <groupId>ru.practicum.stats</groupId>
-    <artifactId>stats</artifactId>
+    <artifactId>ewm-stats</artifactId>
     <packaging>pom</packaging>
 
     <modules>
-        <module>stats-client</module>
-        <module>stats-dto</module>
-        <module>stats-server</module>
+        <module>client</module>
+        <module>dto</module>
+        <module>server</module>
     </modules>
 
     <properties>

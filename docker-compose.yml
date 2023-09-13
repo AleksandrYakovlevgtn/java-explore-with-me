@@ -1,54 +1,57 @@
 version: '3.1'
 services:
   stats-server:
-    build: ./stats/stats-server
-    container_name: stats
+    build: ./ewm-stats/server
+    image: ewm-stats
+    container_name: ewm-stats
     ports:
-        - "9090:9090"
-        - "9091:9091"
+      - "9090:9090"
+      - "9091:9091"
     depends_on:
-        - stats-db
+      - stats-db
     environment:
-        - APP_DB_HOST=stats-db
-        - APP_DB_PORT=5432
-        - APP_DB_NAME=stats
-        - APP_DB_USER=root
-        - APP_DB_PASSWORD=root
-        - SPRING_PROFILES_ACTIVE=default
+      - APP_DB_HOST=stats-db
+      - APP_DB_PORT=5432
+      - APP_DB_NAME=ewm-stats
+      - APP_DB_USER=root
+      - APP_DB_PASSWORD=root
+      - SPRING_PROFILES_ACTIVE=default
+
   stats-db:
     image: postgres:14-alpine
     container_name: ewm-stats-db
     ports:
-        - "5799:5432"
+      - "5799:5432"
     environment:
-        - POSTGRES_DB=stats
-        - POSTGRES_USER=root
-        - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=ewm-stats
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
 
   ewm-service:
-    build: ./main
-    container_name: main
+    build: ./ewm-main
+    image: ewm-main
+    container_name: ewm-main
     ports:
-        - "8080:8080"
-        - "8081:8081"
+      - "8080:8080"
+      - "8081:8081"
     depends_on:
-        - ewm-db
-        - stats-server
+      - ewm-db
+      - stats-server
     environment:
-        - APP_DB_HOST=ewm-db
-        - APP_DB_PORT=5432
-        - APP_DB_NAME=main
-        - APP_DB_USER=root
-        - APP_DB_PASSWORD=root
-        - APP_STATS_SERVER_URL=http://stats-server:9090
-        - SPRING_PROFILES_ACTIVE=default
+      - APP_DB_HOST=ewm-db
+      - APP_DB_PORT=5432
+      - APP_DB_NAME=ewm-main
+      - APP_DB_USER=root
+      - APP_DB_PASSWORD=root
+      - APP_STATS_SERVER_URL=http://stats-server:9090
+      - SPRING_PROFILES_ACTIVE=default
 
   ewm-db:
     image: postgres:14-alpine
-    container_name: main-db
+    container_name: ewm-main-db
     ports:
-        - "5588:5432"
+      - "5588:5432"
     environment:
-        - POSTGRES_DB=ewm-main
-        - POSTGRES_USER=root
-        - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=ewm-main
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root

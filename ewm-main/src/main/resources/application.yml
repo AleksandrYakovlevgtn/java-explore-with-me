@@ -18,20 +18,22 @@ spring:
     init:
       mode: always
 
+
 logging:
   level:
     ru.practicum: DEBUG
     org.springframework.web: DEBUG
 
 app:
-  name: main
+  name: ewm-main
   stats-server-url: http://localhost:9090
   db:
     host: localhost
     port: 5432
-    name: main
-    user: postgres
-    password: postgres
+    name: ewm-main
+    user: java
+    password: java
   format:
     date: yyyy-MM-dd
     date-time: yyyy-MM-dd HH:mm:ss
+

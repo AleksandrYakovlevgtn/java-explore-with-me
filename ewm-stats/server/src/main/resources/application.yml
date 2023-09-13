@@ -24,13 +24,13 @@ logging:
     org.springframework.web: DEBUG
 
 app:
-  name: stats
+  name: ewm-stats
   db:
     host: localhost
     port: 5432
-    name: stats
-    user: postgres
-    password: postgres
+    name: ewm-stats
+    user: java
+    password: java
   format:
     date: yyyy-MM-dd
     date-time: yyyy-MM-dd HH:mm:ss
