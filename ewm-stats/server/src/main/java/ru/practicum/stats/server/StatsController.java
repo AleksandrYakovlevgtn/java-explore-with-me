@@ -1,11 +1,11 @@
-package ru.practicum.stats.server.stats;
+package ru.practicum.stats.server;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.stats.dto.StatsDtoRequest;
 import ru.practicum.stats.dto.StatsDtoResponse;
-import ru.practicum.stats.server.stats.service.StatsService;
+import ru.practicum.stats.server.service.StatsService;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;

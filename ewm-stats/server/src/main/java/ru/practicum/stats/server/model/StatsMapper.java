@@ -1,8 +1,7 @@
-package ru.practicum.stats.server.stats;
+package ru.practicum.stats.server.model;
 
 import org.springframework.stereotype.Component;
 import ru.practicum.stats.dto.StatsDtoRequest;
-import ru.practicum.stats.server.stats.model.Stats;
 
 @Component
 public class StatsMapper {
@@ -12,6 +11,6 @@ public class StatsMapper {
                 .setApp(dto.getApp())
                 .setUri(dto.getUri())
                 .setIp(dto.getIp())
-                .setTimestamp(dto.getTimeStamp());
+                .setTimestamp(dto.getTimestamp());
     }
 }

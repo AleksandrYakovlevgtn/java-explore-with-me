@@ -5,6 +5,6 @@ import lombok.Value;
 @Value
 public class StatsDtoResponse {
     String app;
-    String url;
-    String hits;
+    String uri;
+    Long hits;
 }

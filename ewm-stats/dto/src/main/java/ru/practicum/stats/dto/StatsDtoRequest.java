@@ -15,5 +15,6 @@ public class StatsDtoRequest {
     String uri;
     @NotBlank
     String ip;
-    @NotNull LocalDateTime timeStamp;
+    @NotNull
+    LocalDateTime timestamp;
 }

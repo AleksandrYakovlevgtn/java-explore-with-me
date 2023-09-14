@@ -1,12 +1,12 @@
-package ru.practicum.stats.server.stats.service;
+package ru.practicum.stats.server.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.stats.dto.StatsDtoRequest;
 import ru.practicum.stats.dto.StatsDtoResponse;
-import ru.practicum.stats.server.stats.StatsMapper;
-import ru.practicum.stats.server.stats.model.Stats;
+import ru.practicum.stats.server.model.StatsMapper;
+import ru.practicum.stats.server.model.Stats;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;
@@ -29,6 +29,7 @@ public class StatsServiceImpl implements StatsService {
     }
 
     @Override
+    @Transactional
     public List<StatsDtoResponse> search(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<StatsDtoResponse> cr = cb.createQuery(StatsDtoResponse.class);
@@ -42,10 +43,11 @@ public class StatsServiceImpl implements StatsService {
         Expression<Long> count = unique
                 ? cb.countDistinct(root.get("ip"))
                 : cb.count(root.get("ip"));
-        cr.multiselect(root.get("app"), root.get("app"), count)
+        cr.multiselect(root.get("app"), root.get("uri"), count)
                 .where(conditions.toArray(new Predicate[]{}))
                 .groupBy(root.get("app"), root.get("uri"))
                 .orderBy(cb.desc(count));
         return entityManager.createQuery(cr).getResultList();
+
     }
 }
