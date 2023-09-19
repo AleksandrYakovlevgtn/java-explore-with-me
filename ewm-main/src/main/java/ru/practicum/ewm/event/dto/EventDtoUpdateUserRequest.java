@@ -32,6 +32,7 @@ public class EventDtoUpdateUserRequest {
     Integer participantLimit;
     Boolean requestModeration;
     ActionState stateAction;
+    @Pattern(regexp = ".*\\S.*")
     @Size(min = 3, max = 120)
     String title;
 }

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
 import ru.practicum.ewm.event.dto.*;
+import ru.practicum.ewm.exception.BadRequestException;
 import ru.practicum.ewm.exception.ConflictException;
 import ru.practicum.ewm.exception.NotFoundException;
 import ru.practicum.ewm.workFolder.utilite.CustomPageRequest;
@@ -121,6 +122,7 @@ public class EventServiceImpl implements EventService {
             checkId(categoryRepository, dto.getCategoryId());
         }
         Event entity = getNonNullObject(eventRepository, eventId);
+        //checkTitle(dto);
         checkAdminActionState(dto, entity);
         checkEventDate(entity, dto);
         entity = eventMapper.updateEntity(dto, entity, categoryRepository);
@@ -156,7 +158,12 @@ public class EventServiceImpl implements EventService {
         if (entity.getState() != EventState.PUBLISHED) {
             throw new NotFoundException(String.format("event с id=%s не найден.", eventId));
         }
-        setViews(List.of(entity));
+        if (entity.getViews() == null) {
+            entity.setViews(1L);
+        } else {
+            entity.setViews(entity.getViews() + 1L);
+        }
+        //setViews(List.of(entity));
         return eventMapper.toDto(entity);
     }
 
@@ -248,8 +255,16 @@ public class EventServiceImpl implements EventService {
         if (dto.getEventDate() != null) {
             if (entity.getPublishedOn() != null && dto.getEventDate().isBefore(entity.getPublishedOn().plusHours(1))
                     || dto.getEventDate().isBefore(LocalDateTime.now())) {
-                throw new ConflictException("Дата начала изменяемого мероприятия не должна быть ранее " +
+                throw new BadRequestException("Дата начала изменяемого мероприятия не должна быть ранее " +
                         " чем через час с момента публикации.");
+            }
+        }
+    }
+
+    private void checkTitle(EventDtoUpdateAdminRequest event) {
+        if (event.getTitle() != null && event != null) {
+            if (event.getTitle().length() < 3 || event.getTitle().length() > 120) {
+                throw new BadRequestException("Длина title должна быть в диапазоне от 3 до 120 символов.");
             }
         }
     }

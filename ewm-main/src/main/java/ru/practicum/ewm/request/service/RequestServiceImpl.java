@@ -88,7 +88,7 @@ public class RequestServiceImpl implements RequestService {
     }
 
     private void checkParticipantLimit(Event event) {
-        if (event.getParticipantLimit() - event.getConfirmedRequests() <= 0) {
+        if (event.getParticipantLimit() - event.getConfirmedRequests() < 0 && event.getParticipantLimit() - event.getConfirmedRequests() != 0) {
             throw new ConflictException("Достигнут лимит заявок на участие.");
         }
     }

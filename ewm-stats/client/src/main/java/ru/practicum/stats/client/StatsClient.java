@@ -45,8 +45,8 @@ public class StatsClient {
 
     private HttpHeaders headers() {
         HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
         headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
         return headers;
     }
 
@@ -65,9 +65,9 @@ public class StatsClient {
     }
 
     public ResponseEntity<Object> search(@NotNull LocalDateTime start,
-                                         @NotNull LocalDateTime end,
-                                         List<String> uris,
-                                         Boolean unique) {
+                                                         @NotNull LocalDateTime end,
+                                                         List<String> uris,
+                                                         Boolean unique) {
         Map<String, Object> setting = Map.of("start", start.format(formatter),
                 "end", end.format(formatter),
                 "uris", uris != null ? String.join(",", uris) : "",

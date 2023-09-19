@@ -42,7 +42,7 @@ public class ErrorHandler {
 
     @ExceptionHandler({DataIntegrityViolationException.class})
     protected ResponseEntity<Object> handleDataIntegrityViolationException(DataIntegrityViolationException ex, WebRequest request) {
-        return makeResponseEntity("Ограничение целостности violated.", ex, CONFLICT, request);
+        return makeResponseEntity("Ограничение целостности violated.", ex, BAD_REQUEST, request);
     }
 
     @ExceptionHandler({HttpMessageNotReadableException.class})
@@ -73,6 +73,11 @@ public class ErrorHandler {
     @ExceptionHandler({ConflictException.class})
     protected ResponseEntity<Object> handleNotFoundEx(ConflictException ex, WebRequest request) {
         return makeResponseEntity(ex.getReason(), ex, CONFLICT, request);
+    }
+
+    @ExceptionHandler({BadRequestException.class})
+    protected ResponseEntity<Object> handleBadRequestEx(BadRequestException ex, WebRequest request) {
+        return makeResponseEntity(ex.getReason(), ex, BAD_REQUEST, request);
     }
 
     @ExceptionHandler

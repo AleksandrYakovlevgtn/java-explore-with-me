@@ -5,6 +5,8 @@ import lombok.Value;
 import ru.practicum.ewm.enums.AdminActionState;
 import ru.practicum.ewm.event.model.Location;
 
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @Value
@@ -19,5 +21,7 @@ public class EventDtoUpdateAdminRequest {
     Integer participantLimit;
     Boolean requestModeration;
     AdminActionState stateAction;
+    @Pattern(regexp = ".*\\S.*")
+    @Size(min = 3, max = 120)
     String title;
 }

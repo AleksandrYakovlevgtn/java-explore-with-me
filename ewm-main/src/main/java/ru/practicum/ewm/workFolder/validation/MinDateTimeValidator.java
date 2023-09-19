@@ -1,6 +1,6 @@
 package ru.practicum.ewm.workFolder.validation;
 
-import ru.practicum.ewm.exception.ConflictException;
+import ru.practicum.ewm.exception.BadRequestException;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -21,7 +21,7 @@ public class MinDateTimeValidator implements ConstraintValidator<MinDateTime, Lo
     @Override
     public boolean isValid(LocalDateTime testedDate, ConstraintValidatorContext constraintValidatorContext) {
         if (testedDate != null && !LocalDateTime.now().plusHours(2).isBefore(testedDate)) {
-            throw new ConflictException(defaultMessage);
+            throw new BadRequestException(defaultMessage);
         }
         return true;
     }

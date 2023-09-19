@@ -59,7 +59,11 @@ public class PublicEventController {
         );
         EventSort eventSort = sort != null ? EventSort.by(sort) : EventSort.EVENT_DATE;
         List<EventDtoShort> body = eventService.publicFindAllByFilter(filter, eventSort, from, size);
-        return ResponseEntity.status(HttpStatus.OK).body(body);
+        if (body.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body(body);
+        }
     }
 
     @GetMapping("/{id}")

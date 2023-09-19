@@ -23,13 +23,12 @@ public class StatsServiceImpl implements StatsService {
     private final StatsMapper statsMapper;
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public void add(StatsDtoRequest statsDtoRequest) {
         entityManager.persist(statsMapper.toEntity(statsDtoRequest));
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<StatsDtoResponse> search(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<StatsDtoResponse> cr = cb.createQuery(StatsDtoResponse.class);

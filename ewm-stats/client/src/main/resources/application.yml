@@ -1,3 +1,5 @@
-stats-server-url: http://localhost:9090
-format:
-date: yyyy-MM-dd HH:mm:ss
+app:
+  name: unknown
+  stats-server-url: http://localhost:9090
+  format:
+    date-time: yyyy-MM-dd HH:mm:ss

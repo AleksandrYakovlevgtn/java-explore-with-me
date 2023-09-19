@@ -61,7 +61,7 @@ public class PrivateEventController {
     public ResponseEntity<EventDtoFull> updateById(
             @PathVariable("userId") Long initiatorId,
             @PathVariable("eventId") Long eventId,
-            @RequestBody @Valid EventDtoUpdateUserRequest dto) {
+            @RequestBody @Validated EventDtoUpdateUserRequest dto) {
         EventDtoFull body = eventService.updateById(initiatorId, eventId, dto);
         return ResponseEntity.status(HttpStatus.OK).body(body);
     }

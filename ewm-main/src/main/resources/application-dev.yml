@@ -1,0 +1,51 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${app.db.host}:${app.db.port}/${app.db.name}
+    username: ${app.db.user}
+    password: ${app.db.password}
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQL10Dialect
+        format_sql: true
+  sql:
+    init:
+      mode: always
+  banner:
+    location: banner/banner-dev.txt
+  mvc:
+    throw-exception-if-no-handler-found: true
+  web:
+    resources:
+      add-mappings: false
+
+logging:
+  level:
+    ru.practicum: DEBUG
+    org.springframework.web: DEBUG
+    org.hibernate: DEBUG
+#    ru.practicum: DEBUG
+#    org.springframework.web.servlet.DispatcherServlet: DEBUG
+#    org.springframework.web: DEBUG
+#    guru.springframework.controllers: DEBUG
+#    org.hibernate: DEBUG
+#    org: INFO
+
+app:
+  name: ewm-main
+  stats-server-url: http://localhost:9090
+  db:
+    host: localhost
+    port: 5432
+    name: ewm-main
+    user: postgres
+    password: 12345
+  format:
+    date: yyyy-MM-dd
+    date-time: yyyy-MM-dd HH:mm:ss
