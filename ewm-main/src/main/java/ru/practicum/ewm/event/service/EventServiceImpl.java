@@ -58,6 +58,15 @@ public class EventServiceImpl implements EventService {
         checkId(userRepository, userId);
         checkId(categoryRepository, dto.getCategoryId());
         Event entity = eventMapper.toEntity(dto, userId);
+        if (entity.getPaid() == null) {
+            entity.setPaid(false);
+        }
+        if (entity.getRequestModeration() == null) {
+            entity.setRequestModeration(true);
+        }
+        if (entity.getParticipantLimit() == null) {
+            entity.setParticipantLimit(0);
+        }
         Event added = eventRepository.save(entity);
         return eventMapper.toDto(added);
     }
@@ -122,7 +131,6 @@ public class EventServiceImpl implements EventService {
             checkId(categoryRepository, dto.getCategoryId());
         }
         Event entity = getNonNullObject(eventRepository, eventId);
-        //checkTitle(dto);
         checkAdminActionState(dto, entity);
         checkEventDate(entity, dto);
         entity = eventMapper.updateEntity(dto, entity, categoryRepository);
@@ -163,7 +171,6 @@ public class EventServiceImpl implements EventService {
         } else {
             entity.setViews(entity.getViews() + 1L);
         }
-        //setViews(List.of(entity));
         return eventMapper.toDto(entity);
     }
 
@@ -257,14 +264,6 @@ public class EventServiceImpl implements EventService {
                     || dto.getEventDate().isBefore(LocalDateTime.now())) {
                 throw new BadRequestException("Дата начала изменяемого мероприятия не должна быть ранее " +
                         " чем через час с момента публикации.");
-            }
-        }
-    }
-
-    private void checkTitle(EventDtoUpdateAdminRequest event) {
-        if (event.getTitle() != null && event != null) {
-            if (event.getTitle().length() < 3 || event.getTitle().length() > 120) {
-                throw new BadRequestException("Длина title должна быть в диапазоне от 3 до 120 символов.");
             }
         }
     }

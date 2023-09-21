@@ -30,8 +30,8 @@ public class Compilation {
             inverseJoinColumns = @JoinColumn(name = "event_id"))
     Set<Event> events;
 
-    @Column(name = "pinned", nullable = false)
-    Boolean pinned = false;
+    @Column(name = "pinned", columnDefinition = "DEFAULT FALSE", nullable = false)
+    Boolean pinned;
 
     @Column(name = "title", nullable = false)
     String title;

@@ -1,6 +1,5 @@
 package ru.practicum.ewm.exception;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -27,7 +26,6 @@ import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.*;
 
-@Slf4j
 @RestControllerAdvice
 public class ErrorHandler {
     @ExceptionHandler({MethodArgumentNotValidException.class})
@@ -86,7 +84,6 @@ public class ErrorHandler {
     }
 
     private ResponseEntity<Object> makeResponseEntity(String reason, Throwable ex, HttpStatus status, WebRequest request) {
-        log.error("{}: {}", reason, ex.getMessage());
         ex.printStackTrace();
         ErrorResponse errorResponse = makeBody(reason, status, request, ex);
         return new ResponseEntity<>(errorResponse, status);

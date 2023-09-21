@@ -29,6 +29,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDto add(CategoryDto dto) {
+        checkNameCategory(dto.getName());
         Category saved = categoryRepository.save(categoryMapper.toEntity(dto));
         return categoryMapper.toDto(saved);
     }
@@ -36,6 +37,11 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDto update(Long catId, CategoryDto dto) {
         Category entity = getNonNullObject(categoryRepository, catId, Category.class);
+        if (entity.getName().equals(dto.getName())) {
+            return categoryMapper.toDto(entity);
+        } else if (!entity.getName().equals(dto.getName())) {
+            checkNameCategory(dto.getName());
+        }
         Category updated = categoryMapper.updateEntity(dto, entity);
         updated = categoryRepository.save(updated);
         return categoryMapper.toDto(updated);
@@ -67,6 +73,12 @@ public class CategoryServiceImpl implements CategoryService {
                 .withMatcher("category.id", exact());
         if (eventRepository.exists(Example.of(event, matcher))) {
             throw new ConflictException("Категория не пуста.");
+        }
+    }
+
+    private void checkNameCategory(String name) {
+        if (categoryRepository.findCategoryByName(name) != null) {
+            throw new ConflictException("Имя уже занято.");
         }
     }
 }

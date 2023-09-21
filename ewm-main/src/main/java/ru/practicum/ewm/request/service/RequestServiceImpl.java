@@ -44,6 +44,9 @@ public class RequestServiceImpl implements RequestService {
                 .setEvent(new Event().setId(eventId))
                 .setRequester(new User().setId(userId))
                 .setStatus(event.getRequestModeration() ? RequestState.PENDING : RequestState.CONFIRMED);
+        if (event.getParticipantLimit() == 0) {
+            request.setStatus(RequestState.CONFIRMED);
+        }
         request = requestRepository.save(request);
         if (!event.getRequestModeration()) {
             event.setConfirmedRequests(event.getConfirmedRequests() + 1);
@@ -77,7 +80,9 @@ public class RequestServiceImpl implements RequestService {
 
     private void checkNotReachedLimit(Event event) {
         if (event.getParticipantLimit() <= event.getConfirmedRequests()) {
-            throw new ConflictException("Достигнут лимит заявок на участие.");
+            if (event.getParticipantLimit() != 0) {
+                throw new ConflictException("Достигнут лимит заявок на участие.");
+            }
         }
     }
 
@@ -88,8 +93,10 @@ public class RequestServiceImpl implements RequestService {
     }
 
     private void checkParticipantLimit(Event event) {
-        if (event.getParticipantLimit() - event.getConfirmedRequests() < 0 && event.getParticipantLimit() - event.getConfirmedRequests() != 0) {
-            throw new ConflictException("Достигнут лимит заявок на участие.");
+        if (event.getParticipantLimit() != 0) {
+            if ((event.getParticipantLimit() - event.getConfirmedRequests()) < 0) {
+                throw new ConflictException("Достигнут лимит заявок на участие.");
+            }
         }
     }
 

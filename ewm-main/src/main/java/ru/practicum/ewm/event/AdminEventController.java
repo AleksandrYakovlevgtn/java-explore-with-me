@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.event.model.AdminSearchFilter;
 import ru.practicum.ewm.event.dto.EventDtoFull;
@@ -31,7 +32,7 @@ public class AdminEventController {
     @Operation(summary = "adminUpdateById")
     public ResponseEntity<EventDtoFull> adminUpdateById(
             @PathVariable Long eventId,
-            @RequestBody EventDtoUpdateAdminRequest dto) {
+            @Validated @RequestBody EventDtoUpdateAdminRequest dto) {
         EventDtoFull body = eventService.adminUpdateById(eventId, dto);
         return ResponseEntity.status(HttpStatus.OK).body(body);
     }

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import ru.practicum.ewm.exception.ConflictException;
 import ru.practicum.ewm.workFolder.utilite.CustomPageRequest;
 import ru.practicum.ewm.user.model.User;
 import ru.practicum.ewm.user.dto.UserDto;
@@ -24,6 +25,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto add(UserDto dto) {
+        checkNameUser(dto.getName());
         User saved = userRepository.save(userMapper.toEntity(dto));
         return userMapper.toDto(saved);
     }
@@ -35,12 +37,18 @@ public class UserServiceImpl implements UserService {
         Page<User> page = Objects.nonNull(userIds) && !userIds.isEmpty()
                 ? userRepository.findByIdIn(userIds, pageable)
                 : userRepository.findAll(pageable);
-      return userMapper.toDto(page.getContent());
+        return userMapper.toDto(page.getContent());
     }
 
     @Override
     public void remove(Long userId) {
         checkId(userRepository, userId, User.class);
         userRepository.deleteById(userId);
+    }
+
+    private void checkNameUser(String name) {
+        if (userRepository.findUserByName(name) != null) {
+            throw new ConflictException("Имя уже занято.");
+        }
     }
 }

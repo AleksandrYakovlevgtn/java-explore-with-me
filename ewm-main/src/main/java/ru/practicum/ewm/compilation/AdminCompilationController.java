@@ -11,6 +11,8 @@ import ru.practicum.ewm.compilation.dto.CompilationDtoNew;
 import ru.practicum.ewm.compilation.dto.CompilationDtoUpdate;
 import ru.practicum.ewm.compilation.service.CompilationService;
 
+import javax.validation.Valid;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin/compilations")
@@ -20,7 +22,7 @@ public class AdminCompilationController {
 
     @PostMapping
     @Operation(summary = "add")
-    public ResponseEntity<CompilationDto> add(@Validated @RequestBody CompilationDtoNew dto) {
+    public ResponseEntity<CompilationDto> add(@Valid @RequestBody CompilationDtoNew dto) {
         CompilationDto body = compilationService.add(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(body);
     }
