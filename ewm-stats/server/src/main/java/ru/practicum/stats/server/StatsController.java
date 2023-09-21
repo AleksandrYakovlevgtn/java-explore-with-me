@@ -30,7 +30,7 @@ public class StatsController {
 
     @GetMapping("/stats")
     @Operation(summary = "get")
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     public List<StatsDtoResponse> get(@RequestParam("start") String start,
                                       @RequestParam("end") String end,
                                       @RequestParam(value = "uris", required = false) List<String> uris,

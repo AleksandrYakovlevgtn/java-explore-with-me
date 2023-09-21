@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.stats.dto.StatsDtoRequest;
 import ru.practicum.stats.dto.StatsDtoResponse;
+import ru.practicum.stats.server.exeption.BadRequestException;
 import ru.practicum.stats.server.model.StatsMapper;
 import ru.practicum.stats.server.model.Stats;
 
@@ -30,6 +31,9 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public List<StatsDtoResponse> search(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
+        if (end.isBefore(start)) {
+            throw new BadRequestException("Конец не может быть раньше начала.");
+        }
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<StatsDtoResponse> cr = cb.createQuery(StatsDtoResponse.class);
         Root<Stats> root = cr.from(Stats.class);
@@ -47,6 +51,5 @@ public class StatsServiceImpl implements StatsService {
                 .groupBy(root.get("app"), root.get("uri"))
                 .orderBy(cb.desc(count));
         return entityManager.createQuery(cr).getResultList();
-
     }
 }
