@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.event.repository.EventRepository;
 import ru.practicum.ewm.workFolder.utilite.CustomPageRequest;
 import ru.practicum.ewm.compilation.dto.CompilationDto;
@@ -26,6 +27,7 @@ public class CompilationServiceImpl implements CompilationService {
     private final EventRepository eventRepository;
 
     @Override
+    @Transactional
     public CompilationDto add(CompilationDtoNew dto) {
         Compilation compilation = new Compilation();
         if (dto.getPinned() == null) {
@@ -38,14 +40,13 @@ public class CompilationServiceImpl implements CompilationService {
         } else {
             compilation.setEvents(eventRepository.findByIdIn(dto.getEventIds()));
         }
-        if (dto.getTitle() != null) {
-            compilation.setTitle(dto.getTitle());
-        }
+        compilation.setTitle(dto.getTitle());
         compilation = compilationRepository.save(compilation);
         return compilationMapper.toDto(compilation);
     }
 
     @Override
+    @Transactional
     public CompilationDto update(Long compId, CompilationDtoUpdate dto) {
         Compilation entity = getNonNullObject(compilationRepository, compId);
         if (dto.getPinned() != null) {
@@ -57,18 +58,18 @@ public class CompilationServiceImpl implements CompilationService {
         if (dto.getTitle() != null) {
             entity.setTitle(dto.getTitle());
         }
-        //Compilation updated = compilationMapper.updateEntity(dto, entity);
-        compilationRepository.save(entity);
         return compilationMapper.toDto(entity);
     }
 
     @Override
+    @Transactional
     public void remove(Long compId) {
         checkId(compilationRepository, compId);
         compilationRepository.deleteById(compId);
     }
 
     @Override
+    @Transactional
     public List<CompilationDto> findAll(Boolean pinned, Integer from, Integer size) {
         Sort sort = Sort.by("id").ascending();
         CustomPageRequest pageable = CustomPageRequest.by(from, size, sort);
@@ -77,6 +78,7 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
+    @Transactional
     public CompilationDto findById(Long compId) {
         Compilation entity = getNonNullObject(compilationRepository, compId);
         return compilationMapper.toDto(entity);

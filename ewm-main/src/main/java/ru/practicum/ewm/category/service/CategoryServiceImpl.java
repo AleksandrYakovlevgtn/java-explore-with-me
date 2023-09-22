@@ -6,6 +6,7 @@ import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.exception.ConflictException;
 import ru.practicum.ewm.workFolder.utilite.CustomPageRequest;
 import ru.practicum.ewm.category.model.Category;
@@ -28,6 +29,7 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryMapper categoryMapper;
 
     @Override
+    @Transactional
     public CategoryDto add(CategoryDto dto) {
         checkNameCategory(dto.getName());
         Category saved = categoryRepository.save(categoryMapper.toEntity(dto));
@@ -35,6 +37,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional
     public CategoryDto update(Long catId, CategoryDto dto) {
         Category entity = getNonNullObject(categoryRepository, catId, Category.class);
         if (entity.getName().equals(dto.getName())) {
@@ -42,18 +45,18 @@ public class CategoryServiceImpl implements CategoryService {
         } else if (!entity.getName().equals(dto.getName())) {
             checkNameCategory(dto.getName());
         }
-        Category updated = categoryMapper.updateEntity(dto, entity);
-        updated = categoryRepository.save(updated);
-        return categoryMapper.toDto(updated);
+        return categoryMapper.toDto(categoryMapper.updateEntity(dto, entity));
     }
 
     @Override
+    @Transactional
     public void remove(Long catId) {
         checkCategoryEmpty(catId);
         categoryRepository.deleteById(catId);
     }
 
     @Override
+    @Transactional
     public List<CategoryDto> findAll(Integer from, Integer size) {
         Sort sort = Sort.by("id").ascending();
         CustomPageRequest pageable = CustomPageRequest.by(from, size, sort);
@@ -62,6 +65,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional
     public CategoryDto findById(Long catId) {
         Category entity = getNonNullObject(categoryRepository, catId, Category.class);
         return categoryMapper.toDto(entity);

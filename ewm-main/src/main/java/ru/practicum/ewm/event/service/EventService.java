@@ -5,6 +5,7 @@ import ru.practicum.ewm.event.model.*;
 import ru.practicum.ewm.enums.EventSort;
 import ru.practicum.ewm.request.dto.RequestDtoParticipation;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public interface EventService {
@@ -24,7 +25,7 @@ public interface EventService {
 
     List<EventDtoFull> adminFindAllByFilter(AdminSearchFilter filter, Integer from, Integer size);
 
-    List<EventDtoShort> publicFindAllByFilter(AdminSearchFilter filter, EventSort eventSort, Integer from, Integer size);
+    List<EventDtoShort> publicFindAllByFilter(AdminSearchFilter filter, EventSort eventSort, Integer from, Integer size, HttpServletRequest servletRequest);
 
-    EventDtoFull publicFindById(Long eventId);
+    EventDtoFull publicFindById(Long eventId,HttpServletRequest servletRequest);
 }

@@ -6,13 +6,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestClientException;
 import ru.practicum.ewm.event.model.AdminSearchFilter;
 import ru.practicum.ewm.event.dto.EventDtoFull;
 import ru.practicum.ewm.event.dto.EventDtoShort;
 import ru.practicum.ewm.enums.EventSort;
 import ru.practicum.ewm.event.service.EventService;
-import ru.practicum.stats.client.StatsClient;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Positive;
@@ -27,8 +25,6 @@ import java.util.List;
 public class PublicEventController {
 
     private final EventService eventService;
-    private final StatsClient statsClient;
-
     @Value("${app.format.date-time}")
     private String format;
 
@@ -45,7 +41,6 @@ public class PublicEventController {
             @RequestParam(value = "sort", required = false) String sort,
             @PositiveOrZero @RequestParam(value = "from", defaultValue = "0") Integer from,
             @Positive @RequestParam(value = "size", defaultValue = "10") Integer size) {
-        sendToStats(servletRequest);
 
         AdminSearchFilter filter = new AdminSearchFilter(
                 null,
@@ -58,7 +53,7 @@ public class PublicEventController {
                 onlyAvailable
         );
         EventSort eventSort = sort != null ? EventSort.by(sort) : EventSort.EVENT_DATE;
-        List<EventDtoShort> body = eventService.publicFindAllByFilter(filter, eventSort, from, size);
+        List<EventDtoShort> body = eventService.publicFindAllByFilter(filter, eventSort, from, size, servletRequest);
         if (body.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
         } else {
@@ -72,21 +67,11 @@ public class PublicEventController {
             HttpServletRequest servletRequest,
             @PathVariable("id") Long eventId) {
 
-        sendToStats(servletRequest);
-
-        EventDtoFull body = eventService.publicFindById(eventId);
+        EventDtoFull body = eventService.publicFindById(eventId, servletRequest);
         return ResponseEntity.status(HttpStatus.OK).body(body);
     }
 
     private LocalDateTime toLocalDateTime(String value) {
         return value != null ? LocalDateTime.parse(value, DateTimeFormatter.ofPattern(format)) : null;
-    }
-
-    private void sendToStats(HttpServletRequest servletRequest) {
-        try {
-            statsClient.add(servletRequest);
-        } catch (RestClientException e) {
-            e.printStackTrace();
-        }
     }
 }

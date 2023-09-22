@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.exception.ConflictException;
 import ru.practicum.ewm.workFolder.utilite.CustomPageRequest;
 import ru.practicum.ewm.user.model.User;
@@ -24,6 +25,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
 
     @Override
+    @Transactional
     public UserDto add(UserDto dto) {
         checkNameUser(dto.getName());
         User saved = userRepository.save(userMapper.toEntity(dto));
@@ -31,6 +33,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public List<UserDto> find(List<Long> userIds, Integer from, Integer size) {
         Sort sort = Sort.by("id").ascending();
         CustomPageRequest pageable = CustomPageRequest.by(from, size, sort);
@@ -41,6 +44,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void remove(Long userId) {
         checkId(userRepository, userId, User.class);
         userRepository.deleteById(userId);

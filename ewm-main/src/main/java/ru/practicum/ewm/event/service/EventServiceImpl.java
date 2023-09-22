@@ -31,6 +31,7 @@ import ru.practicum.ewm.user.repository.UserRepository;
 import ru.practicum.stats.client.StatsClient;
 import ru.practicum.stats.dto.StatsDtoResponse;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -54,6 +55,7 @@ public class EventServiceImpl implements EventService {
     private final ObjectMapper objectMapper;
 
     @Override
+    @Transactional
     public EventDtoFull add(Long userId, EventDtoNew dto) {
         checkId(userRepository, userId);
         checkId(categoryRepository, dto.getCategoryId());
@@ -72,6 +74,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventDtoFull updateById(Long initiatorId, Long eventId, EventDtoUpdateUserRequest dto) {
         checkId(userRepository, initiatorId);
         if (Objects.nonNull(dto.getCategoryId())) {
@@ -86,6 +89,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public List<RequestDtoParticipation> findRequestsByEventId(Long initiatorId, Long eventId) {
         checkId(userRepository, initiatorId);
         checkId(eventRepository, eventId);
@@ -126,6 +130,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventDtoFull adminUpdateById(Long eventId, EventDtoUpdateAdminRequest dto) {
         if (Objects.nonNull(dto.getCategoryId())) {
             checkId(categoryRepository, dto.getCategoryId());
@@ -139,6 +144,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public List<EventDtoFull> adminFindAllByFilter(AdminSearchFilter filter, Integer from, Integer size) {
         Sort sort = Sort.by("id").ascending();
         CustomPageRequest pageable = CustomPageRequest.by(from, size, sort);
@@ -148,7 +154,9 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventDtoShort> publicFindAllByFilter(AdminSearchFilter filter, EventSort eventSort, Integer from, Integer size) {
+    @Transactional
+    public List<EventDtoShort> publicFindAllByFilter(AdminSearchFilter filter, EventSort eventSort, Integer from, Integer size, HttpServletRequest servletRequest) {
+        sendToStats(servletRequest);
         Sort sort = eventSort == EventSort.EVENT_DATE
                 ? Sort.by("eventDate").ascending()
                 : Sort.by("views").ascending();
@@ -161,7 +169,9 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public EventDtoFull publicFindById(Long eventId) {
+    @Transactional
+    public EventDtoFull publicFindById(Long eventId, HttpServletRequest servletRequest) {
+        sendToStats(servletRequest);
         Event entity = getNonNullObject(eventRepository, eventId);
         if (entity.getState() != EventState.PUBLISHED) {
             throw new NotFoundException(String.format("event с id=%s не найден.", eventId));
@@ -175,6 +185,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public List<EventDtoShort> findAllByInitiatorId(Long initiatorId, Integer from, Integer size) {
         checkId(userRepository, initiatorId);
         Sort sort = Sort.by("id").ascending();
@@ -186,6 +197,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventDtoFull findById(Long initiatorId, Long eventId) {
         checkId(userRepository, initiatorId);
         Event entity = getNonNullObject(eventRepository, eventId);
@@ -282,5 +294,13 @@ public class EventServiceImpl implements EventService {
                         ? (qEvent.annotation.likeIgnoreCase(filter.getText()).or(qEvent.description.likeIgnoreCase(filter.getText()))) : null)
                 .and(!isNullOrEmpty.test(filter.getOnlyAvailable())
                         ? qEvent.participantLimit.eq(0).or(qEvent.confirmedRequests.lt(qEvent.participantLimit)) : null);
+    }
+
+    private void sendToStats(HttpServletRequest servletRequest) {
+        try {
+            statsClient.add(servletRequest);
+        } catch (RestClientException e) {
+            e.printStackTrace();
+        }
     }
 }
