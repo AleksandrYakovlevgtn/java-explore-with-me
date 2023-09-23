@@ -2,7 +2,7 @@ package ru.practicum.ewm.event;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -16,7 +16,6 @@ import ru.practicum.ewm.event.service.EventService;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
@@ -25,8 +24,6 @@ import java.util.List;
 public class AdminEventController {
 
     private final EventService eventService;
-    @Value("${app.format.date-time}")
-    private String format;
 
     @PatchMapping("/admin/events/{eventId}")
     @Operation(summary = "adminUpdateById")
@@ -43,8 +40,8 @@ public class AdminEventController {
             @RequestParam(value = "users", required = false) List<Long> userIds,
             @RequestParam(value = "states", required = false) List<EventState> states,
             @RequestParam(value = "categories", required = false) List<Long> categoryIds,
-            @RequestParam(value = "rangeStart", required = false) String rangeStart,
-            @RequestParam(value = "rangeEnd", required = false) String rangeEnd,
+            @RequestParam(value = "rangeStart", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
+            @RequestParam(value = "rangeEnd", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
             @PositiveOrZero @RequestParam(value = "from", defaultValue = "0") Integer from,
             @Positive @RequestParam(value = "size", defaultValue = "10") Integer size
     ) {
@@ -52,17 +49,13 @@ public class AdminEventController {
                 userIds,
                 states,
                 categoryIds,
-                toLocalDateTime(rangeStart),
-                toLocalDateTime(rangeEnd),
+                rangeStart,
+                rangeEnd,
                 null,
                 null,
                 null
         );
         List<EventDtoFull> body = eventService.adminFindAllByFilter(filter, from, size);
         return ResponseEntity.status(HttpStatus.OK).body(body);
-    }
-
-    private LocalDateTime toLocalDateTime(String value) {
-        return value != null ? LocalDateTime.parse(value, DateTimeFormatter.ofPattern(format)) : null;
     }
 }

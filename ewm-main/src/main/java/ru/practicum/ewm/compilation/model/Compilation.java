@@ -9,6 +9,7 @@ import lombok.experimental.FieldDefaults;
 import ru.practicum.ewm.event.model.Event;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Setter
@@ -28,7 +29,7 @@ public class Compilation {
     @JoinTable(name = "compilations_events",
             joinColumns = @JoinColumn(name = "comp_id"),
             inverseJoinColumns = @JoinColumn(name = "event_id"))
-    Set<Event> events;
+    Set<Event> events = new HashSet<>();
 
     @Column(name = "pinned", columnDefinition = "DEFAULT FALSE", nullable = false)
     Boolean pinned;

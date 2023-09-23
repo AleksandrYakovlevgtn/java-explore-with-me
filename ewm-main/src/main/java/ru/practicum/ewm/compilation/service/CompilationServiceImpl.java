@@ -13,7 +13,6 @@ import ru.practicum.ewm.compilation.dto.CompilationDtoUpdate;
 import ru.practicum.ewm.compilation.model.*;
 import ru.practicum.ewm.compilation.repository.CompilationRepository;
 
-import java.util.HashSet;
 import java.util.List;
 
 import static ru.practicum.ewm.workFolder.validation.Validator.checkId;
@@ -35,9 +34,7 @@ public class CompilationServiceImpl implements CompilationService {
         } else {
             compilation.setPinned(dto.getPinned());
         }
-        if (dto.getEventIds() == null) {
-            compilation.setEvents(new HashSet<>());
-        } else {
+        if (dto.getEventIds() != null) {
             compilation.setEvents(eventRepository.findByIdIn(dto.getEventIds()));
         }
         compilation.setTitle(dto.getTitle());
