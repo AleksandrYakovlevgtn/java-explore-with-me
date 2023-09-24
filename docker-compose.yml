@@ -1,4 +1,5 @@
 version: '3.1'
+
 services:
   stats-server:
     build: ./ewm-stats/server
@@ -36,7 +37,6 @@ services:
       - "8081:8081"
     depends_on:
       - ewm-db
-      - stats-server
     environment:
       - APP_DB_HOST=ewm-db
       - APP_DB_PORT=5432

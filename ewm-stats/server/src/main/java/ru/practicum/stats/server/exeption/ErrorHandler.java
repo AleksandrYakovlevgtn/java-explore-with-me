@@ -27,6 +27,11 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @RestControllerAdvice
 public class ErrorHandler extends ResponseEntityExceptionHandler {
+    @ExceptionHandler({BadRequestException.class})
+    protected ResponseEntity<Object> handleBadRequestEx(BadRequestException ex, WebRequest request) {
+        return makeResponseEntity(ex.getReason(), ex, BAD_REQUEST, request);
+    }
+
     @ExceptionHandler({PersistenceException.class})
     protected ResponseEntity<Object> handleAttemptException(PersistenceException o, WebRequest request) {
         String message = "Неудачная попытка сохранения.";
