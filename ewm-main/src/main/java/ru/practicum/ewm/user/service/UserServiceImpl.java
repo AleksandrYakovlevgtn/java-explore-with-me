@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static ru.practicum.ewm.workFolder.validation.Validator.checkId;
+import static ru.practicum.ewm.workFolder.validation.Validator.getNonNullObject;
 
 @Service
 @RequiredArgsConstructor
@@ -48,6 +49,15 @@ public class UserServiceImpl implements UserService {
     public void remove(Long userId) {
         checkId(userRepository, userId, User.class);
         userRepository.deleteById(userId);
+    }
+
+    @Override
+    @Transactional
+    public UserDto privateUpdate(Long userId, Boolean observable) {
+        User user = getNonNullObject(userRepository, userId);
+        user.setObservable(observable);
+        User updated = userRepository.save(user);
+        return userMapper.toDto(updated);
     }
 
     private void checkNameUser(String name) {
