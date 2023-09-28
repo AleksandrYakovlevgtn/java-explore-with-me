@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "8b3c96cf-fbcc-4091-9394-f93728833291",
+		"_postman_id": "c77ac7b3-f637-4a1c-a895-44c011796337",
 		"name": "feature_subscriptions",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "27074402"
@@ -1070,7 +1070,7 @@
 									"const target = pm.response.json();",
 									"",
 									"pm.test(\"Кол-во полученных событий должно соответсвовать\", function () {",
-									"    pm.expect(target.length, \"Кол-во событий\" ).to.eql(2);",
+									"    pm.expect(target.length, \"Кол-во событий\" ).to.eql(3);",
 									"});",
 									"",
 									"pm.test(\"Подписка должна содержать соответствующие id пользователей\", function () {",
@@ -1165,7 +1165,7 @@
 									"const target = pm.response.json();",
 									"",
 									"pm.test(\"Кол-во полученных событий должно соответсвовать\", function () {",
-									"    pm.expect(target.length, \"Кол-во событий\" ).to.eql(3);",
+									"    pm.expect(target.length, \"Кол-во событий\" ).to.eql(4);",
 									"});",
 									"",
 									"pm.test(\"Подписка должна содержать соответствующие id пользователей\", function () {",
