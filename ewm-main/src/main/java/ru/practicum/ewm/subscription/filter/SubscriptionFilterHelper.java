@@ -1,19 +1,18 @@
 package ru.practicum.ewm.subscription.filter;
 
 import com.querydsl.core.BooleanBuilder;
+import org.springframework.util.CollectionUtils;
 import ru.practicum.ewm.event.model.QEvent;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 public class SubscriptionFilterHelper {
 
     public static Optional<BooleanBuilder> makeBooleanBuilder(List<Long> favoriteIds, SubscriptionFilter filter) {
         java.util.function.Predicate<Object> isNullOrEmpty = obj ->
-                Objects.isNull(obj) || (obj instanceof Collection && ((Collection<?>) obj).isEmpty());
-
+                CollectionUtils.isEmpty((Collection<?>) obj);
         QEvent qEvent = QEvent.event;
 
         return isNullOrEmpty.test(favoriteIds)

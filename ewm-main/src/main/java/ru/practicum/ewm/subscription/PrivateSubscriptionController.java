@@ -27,7 +27,6 @@ public class PrivateSubscriptionController {
 
     private final SubscriptionService subscriptionService;
 
-
     @PostMapping
     @Operation(summary = "add")
     public ResponseEntity<SubscriptionDtoResponse> add(

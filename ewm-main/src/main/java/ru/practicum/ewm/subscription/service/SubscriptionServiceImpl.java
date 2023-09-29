@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.exception.ConflictException;
 import ru.practicum.ewm.exception.NotFoundException;
 import ru.practicum.ewm.workFolder.utilite.CustomPageRequest;
@@ -45,6 +46,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     private final EventMapper eventMapper;
 
     @Override
+    @Transactional
     public SubscriptionDtoResponse add(Long userId, SubscriptionDtoRequest dto) {
         checkId(userRepository, userId);
         checkSubscriptionExists(userId);
@@ -56,6 +58,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     }
 
     @Override
+    @Transactional
     public SubscriptionDtoResponse update(Long userId, Long sbrId, SubscriptionDtoUpdate dto) {
         checkId(userRepository, userId);
         Subscription subscription = getNonNullObject(subscriptionRepository, sbrId);
@@ -67,6 +70,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     }
 
     @Override
+    @Transactional
     public void remove(Long userId, Long sbrId) {
         Subscription subscription = getNonNullObject(subscriptionRepository, sbrId);
         checkOwner(userId, subscription);
@@ -74,6 +78,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     }
 
     @Override
+    @Transactional
     public SubscriptionDtoResponse find(Long userId) {
         Subscription subscription = subscriptionRepository.findByOwnerId(userId)
                 .orElseThrow(() ->
@@ -82,6 +87,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     }
 
     @Override
+    @Transactional
     public List<EventDtoShort> findFavoriteEvents(Long userId, SubscriptionFilter filter, EventSort eventSort, Integer from, Integer size) {
         Sort sort = eventSort == EventSort.EVENT_DATE
                 ? Sort.by("eventDate").ascending()
