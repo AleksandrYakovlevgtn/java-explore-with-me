@@ -16,4 +16,5 @@ public class UserDto {
     @NotNull
     @Email
     String email;
+    Boolean observable;
 }

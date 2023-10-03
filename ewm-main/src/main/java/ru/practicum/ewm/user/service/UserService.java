@@ -10,4 +10,6 @@ public interface UserService {
     List<UserDto> find(List<Long> userIds, Integer from, Integer size);
 
     void remove(Long userId);
+
+    UserDto privateUpdate(Long userId, Boolean observable);
 }

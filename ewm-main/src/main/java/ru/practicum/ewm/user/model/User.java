@@ -28,4 +28,6 @@ public class User {
 
     @Column(name = "email", unique = true, nullable = false)
     String email;
+    @Column(name = "observable", nullable = false)
+    Boolean observable = true;
 }

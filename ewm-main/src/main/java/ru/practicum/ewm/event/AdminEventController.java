@@ -12,6 +12,7 @@ import ru.practicum.ewm.event.dto.EventDtoFull;
 import ru.practicum.ewm.event.dto.EventDtoUpdateAdminRequest;
 import ru.practicum.ewm.enums.EventState;
 import ru.practicum.ewm.event.service.EventService;
+import ru.practicum.stats.client.StatsClient;
 
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
@@ -24,6 +25,8 @@ import java.util.List;
 public class AdminEventController {
 
     private final EventService eventService;
+    private final StatsClient statsClient;
+
 
     @PatchMapping("/admin/events/{eventId}")
     @Operation(summary = "adminUpdateById")
